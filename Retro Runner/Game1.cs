@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace Retro_Runner
 {
@@ -12,11 +13,6 @@ namespace Retro_Runner
         private SpriteBatch _spriteBatch;
         MouseState mouseState;
         Random generator = new Random();
-
-        int randomYValue;
-        int randomXValue;
-        int randomSize;
-        int randomSpeed;
 
         //Intro Screen
         Texture2D logoTexture;
@@ -29,6 +25,8 @@ namespace Retro_Runner
 
         SoundEffect musicTheme;
         SoundEffectInstance musicThemeInstance;
+
+        List<Star> stars;
 
         public Game1()
         {
@@ -55,12 +53,16 @@ namespace Retro_Runner
             _graphics.ApplyChanges();
 
             //Intro
-            randomXValue = generator.Next(0, _graphics.PreferredBackBufferWidth - 10);
-            randomYValue = generator.Next(0, _graphics.PreferredBackBufferHeight - 10);
-            randomSize = generator.Next(5, 40);
-            randomSpeed = generator.Next(1, 8);
-            starRect = new Rectangle(randomXValue, randomYValue, randomSize, randomSize);
-            starSpeed = new Vector2(randomSpeed);
+
+            starTexture = Content.Load<Texture2D>("Player");
+            stars = new List<Star>();
+
+            for (int i = 0; i < 45; i++)
+            {
+                int size = generator.Next(10, 20);
+                stars.Add(new Star(starTexture, new Rectangle(generator.Next(_graphics.PreferredBackBufferWidth - size), generator.Next(_graphics.PreferredBackBufferHeight - size), size, size), new Vector2(generator.Next(-4, 4), generator.Next(-4, 4))));
+            }
+
 
             base.Initialize();
         }
@@ -94,15 +96,17 @@ namespace Retro_Runner
                 musicThemeInstance.Play();
 
                 starRect.Y += (int)starSpeed.Y;
-                if (starRect.Bottom > 900)
+                foreach (Star stars in stars)
                 {
-                    randomSize = generator.Next(5, 40);
-                    randomXValue = generator.Next(0, 1000 - randomSize - 1);
-                    randomSpeed = generator.Next(1, 8);
-                    starSpeed.Y = starSpeed.Y = randomSpeed;
-                    starRect = new Rectangle(randomXValue, -10 - randomSize, randomSize, randomSize);
+                    stars.move();
+                    if (stars.Bounds.Right > _graphics.PreferredBackBufferWidth || stars.Bounds.Left < 0)
+                        stars.bumpSide();
+                    if (stars.Bounds.Bottom > _graphics.PreferredBackBufferHeight || stars.Bounds.Top < 0)
+                        stars.bumpTopBottom();
                 }
-                    if (mouseState.LeftButton == ButtonState.Pressed)
+                
+
+                if (mouseState.LeftButton == ButtonState.Pressed)
                 {
                     screen = Screen.MainMenu;
                 }
@@ -122,7 +126,10 @@ namespace Retro_Runner
 
             if (screen == Screen.Intro)
             {
-                _spriteBatch.Draw(starTexture, starRect, Color.White);
+                //_spriteBatch.Draw(starTexture, starRect, Color.White);
+                foreach (Star stars in stars)
+                    _spriteBatch.Draw(stars.Texture, stars.Bounds, Color.White);
+
                 _spriteBatch.Draw(logoTexture, new Rectangle(115, 0, 800, 500), Color.White);
                 _spriteBatch.Draw(continueTexture, new Rectangle(115, 300, 750, 450), Color.White);
             }
