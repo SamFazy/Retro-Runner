@@ -49,12 +49,6 @@ namespace Retro_Runner
         Texture2D badGuyTexture;
         Rectangle badGuyRect;
         Vector2 badGuySpeed;
-        //int badGuySpeed;
-
-        int badGuyTop;
-        int badGuyBottom;
-        int badGuyRight;
-        int badGuyLeft;
 
         //Walls
         Texture2D wallTexture;
@@ -100,7 +94,6 @@ namespace Retro_Runner
 
             //Bad Guy
             badGuySpeed = new Vector2(0, 0);
-            //badGuySpeed = 1;
             badGuyRect = new Rectangle(400, 400, 30, 30);
 
             //Walls
@@ -256,38 +249,28 @@ namespace Retro_Runner
             if (badGuyRect.X < playerRect.X)
             {
                 badGuySpeed.X = badGuySpeed.X = 1;
-                
             }
             if (badGuyRect.X > playerRect.X)
             {
                 badGuySpeed.X = badGuySpeed.X = -1;
-                //badGuyRect.X -= badGuySpeed;
             }
             if (badGuyRect.X == playerRect.X)
             {
                 badGuySpeed.X = badGuySpeed.X = 0;
             }
+            if (badGuyRect.Y < playerRect.Y)
+            {
+            badGuySpeed.Y = badGuySpeed.Y = 1;
 
-                if (badGuyRect.Y < playerRect.Y)
-                {
-                    badGuySpeed.Y = badGuySpeed.Y = 1;
-                    //badGuyRect.Y += badGuySpeed;
-                }
-                if (badGuyRect.Y > playerRect.Y)
-                {
-                    badGuySpeed.Y = badGuySpeed.Y = -1;
-                    //badGuyRect.Y -= badGuySpeed;
-                }
-                if (badGuyRect.Y == playerRect.Y)
-                {
-                    badGuySpeed.Y = badGuySpeed.Y = 0;
-                }
-
-            badGuyTop = badGuyRect.Right;
-            badGuyBottom = badGuyRect.Right;
-            badGuyRight = badGuyRect.Right;
-            badGuyLeft = badGuyRect.Right;
-
+            }
+            if (badGuyRect.Y > playerRect.Y)
+            {
+            badGuySpeed.Y = badGuySpeed.Y = -1;
+            }
+            if (badGuyRect.Y == playerRect.Y)
+            {
+            badGuySpeed.Y = badGuySpeed.Y = 0;
+            }
 
             foreach (Rectangle wall in walls)
                 while (badGuyRect.Intersects(wall))
