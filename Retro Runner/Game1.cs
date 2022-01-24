@@ -14,6 +14,8 @@ namespace Retro_Runner
         KeyboardState keyboardState;
         KeyboardState newState;
         KeyboardState oldState;
+
+        MouseState previousMouseState;
         MouseState mouseState;
         Random generator = new Random();
 
@@ -190,6 +192,8 @@ namespace Retro_Runner
         {
             newState = Keyboard.GetState();
             keyboardState = Keyboard.GetState();
+
+            previousMouseState = mouseState;
             mouseState = Mouse.GetState();
 
 
@@ -249,7 +253,7 @@ namespace Retro_Runner
                     if (exitRect.Contains(mouseState.X, mouseState.Y))
                         Exit();
                 }
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
                 {
                     if (startRect.Contains(mouseState.X, mouseState.Y))
                     {
