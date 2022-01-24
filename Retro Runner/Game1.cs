@@ -50,9 +50,26 @@ namespace Retro_Runner
         Rectangle badGuyRect;
         Vector2 badGuySpeed;
 
+        //Hud
+        Texture2D hudTexture;
+        Rectangle hudRect;
+
         //Walls
         Texture2D wallTexture;
         List<Rectangle> walls;
+
+        //Lava
+        Texture2D lavaTexture;
+        List<Rectangle> lava;
+
+        //Door
+        Texture2D doorTexture;
+        Rectangle doorRect;
+
+        //Coins
+        Texture2D coinTexture;
+        Rectangle coinRect;
+        List<Rectangle> coins;
 
         //End Goal
         Texture2D endGoalTexture;
@@ -88,19 +105,17 @@ namespace Retro_Runner
             _graphics.PreferredBackBufferHeight = 600;
             _graphics.ApplyChanges();
 
-            //Player
-            playerSpeed = 4;
-            playerRect = new Rectangle(50, 50, 30, 30);
-
-            //Bad Guy
-            badGuySpeed = new Vector2(0, 0);
-            badGuyRect = new Rectangle(400, 400, 30, 30);
+            //Hud
+            hudRect = new Rectangle(0, 0, 1000, 100);
 
             //Walls
             walls = new List<Rectangle>();
 
-            //End Goal
-            endGoalRect = new Rectangle(960, 130, 60, 300);
+            //Lava
+            lava = new List<Rectangle>();
+
+            //Coins
+            coins = new List<Rectangle>();
 
             //Intro
             starTexture = Content.Load<Texture2D>("Player");
@@ -113,13 +128,7 @@ namespace Retro_Runner
             }
 
             //Main Menu
-            startRect = new Rectangle(355, 55, 320, 96);
-            howToPlayRect = new Rectangle(115, 150, 800, 500);
-            exitRect = new Rectangle(400, 350, 211, 96);
 
-            //Level 1
-            walls.Add(new Rectangle(0, 250, 350, 75));
-            walls.Add(new Rectangle(450, 250, 350, 75));
 
 
             base.Initialize();
@@ -136,8 +145,20 @@ namespace Retro_Runner
             //Bad Guy
             badGuyTexture = Content.Load<Texture2D>("Player");
 
+            //Hud
+            hudTexture = Content.Load<Texture2D>("Player");
+
             //Wall
             wallTexture = Content.Load<Texture2D>("Player");
+
+            //Lava
+            lavaTexture = Content.Load<Texture2D>("Player");
+
+            //Door
+            doorTexture = Content.Load<Texture2D>("Player");
+
+            //Coin
+            coinTexture = Content.Load<Texture2D>("Player");
 
             //End Goal
             endGoalTexture = Content.Load<Texture2D>("Player");
@@ -154,10 +175,6 @@ namespace Retro_Runner
             startTexture = Content.Load<Texture2D>("Start");
             howToPlayTexture = Content.Load<Texture2D>("How To Play");
             exitTexture = Content.Load<Texture2D>("Exit");
-
-            //Level 1
-
-            //Lebel 2
 
         }
 
@@ -178,6 +195,8 @@ namespace Retro_Runner
             base.Update(gameTime);
 
             //Screens
+
+            //Intro
             if (screen == Screen.Intro)
             {
                 musicThemeInstance.Play();
@@ -199,20 +218,12 @@ namespace Retro_Runner
                 }
 
             }
+            //Main Menu
             else if (screen == Screen.MainMenu)
             {
-                if (mouseState.LeftButton == ButtonState.Pressed)
-                {
-                    if (exitRect.Contains(mouseState.X, mouseState.Y))
-                        Exit();
-                }
-                if (mouseState.LeftButton == ButtonState.Pressed)
-                {
-                    if(startRect.Contains(mouseState.X, mouseState.Y))
-                    {
-                        screen = Screen.Level1;
-                    }
-                }
+                startRect = new Rectangle(355, 55, 320, 96);
+                howToPlayRect = new Rectangle(115, 150, 800, 500);
+                exitRect = new Rectangle(400, 350, 211, 96);
 
 
                 starRect.Y += (int)starSpeed.Y;
@@ -225,20 +236,97 @@ namespace Retro_Runner
                         stars.bumpTopBottom();
                 }
 
-                
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    if (exitRect.Contains(mouseState.X, mouseState.Y))
+                        Exit();
+                }
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    if (startRect.Contains(mouseState.X, mouseState.Y))
+                    {
+                        //Loading in Level 1
+
+                        //Player
+                        playerSpeed = 4;
+                        playerRect = new Rectangle(150, 150, 30, 30);
+
+                        //Bad Guy
+                        badGuySpeed = new Vector2(0, 0);
+                        badGuyRect = new Rectangle(10, 150, 30, 30);
+
+                        //Coins
+                        coins.Add(new Rectangle(730, 170, 30, 30));
+                        coins.Add(new Rectangle(50, 340, 30, 30));
+                        coins.Add(new Rectangle(330, 555, 30, 30));
+                        coins.Add(new Rectangle(370, 290, 30, 30));
+
+                        //Walls
+                        walls.Add(new Rectangle(0, 230, 700, 50));
+                        walls.Add(new Rectangle(240, 100, 35, 70));
+                        walls.Add(new Rectangle(360, 170, 35, 70));
+                        walls.Add(new Rectangle(480, 100, 35, 70));
+                        walls.Add(new Rectangle(600, 170, 35, 70));
+                        walls.Add(new Rectangle(800, 100, 50, 400));
+                        walls.Add(new Rectangle(650, 425, 50, 400));
+                        walls.Add(new Rectangle(520, 425, 50, 110));
+                        walls.Add(new Rectangle(80, 425, 50, 110));
+                        walls.Add(new Rectangle(80, 485, 480, 50));
+                        walls.Add(new Rectangle(180, 250, 50, 100));
+
+                        //Lava
+                        lava.Add(new Rectangle(340, 170, 20, 60));
+                        lava.Add(new Rectangle(460, 100, 20, 70));
+                        lava.Add(new Rectangle(580, 170, 20, 60));
+                        lava.Add(new Rectangle(585, 280, 55, 60));
+                        lava.Add(new Rectangle(180, 350, 50, 60));
+                        lava.Add(new Rectangle(300, 280, 50, 80));
+                        lava.Add(new Rectangle(300, 445, 85, 40));
+                        lava.Add(new Rectangle(425, 280, 50, 100));
+
+                        //Door
+                        doorRect = new Rectangle(800, 500, 50, 400);
+
+                        //End Goal
+                        endGoalRect = new Rectangle(960, 230, 60, 200);
+
+                        screen = Screen.Level1;
+                    }
+                }
+
+
             }
+
+            //Level 1
             else if (screen == Screen.Level1)
             {
+
                 if (playerRect.Intersects(endGoalRect))
                 {
                     playerRect = new Rectangle(50, 50, 30, 30);
                     screen = Screen.Level2;
                 }
 
+                foreach (Rectangle lava in lava)
+                    while (playerRect.Intersects(lava))
+                    {
+                        playerRect = new Rectangle(150, 150, 30, 30);
+                        badGuyRect = new Rectangle(10, 150, 30, 30);
+                    }
+
+
             }
+
+            //Level 2
             else if (screen == Screen.Level2)
             {
-                
+                walls.Clear();
+            }
+
+
+            if (coins.Count == 0)
+            {
+                doorRect = new Rectangle(-100, -100, 1, 1);
             }
 
             //Bad Guy Movement
@@ -272,25 +360,30 @@ namespace Retro_Runner
             badGuySpeed.Y = badGuySpeed.Y = 0;
             }
 
+            if (badGuyRect.Intersects(hudRect))
+            {
+                badGuyRect.Y = 100;
+            }
+
             foreach (Rectangle wall in walls)
                 while (badGuyRect.Intersects(wall))
                 {
 
-                    if(badGuySpeed.X == 1)
+                    if (badGuySpeed.X == 1)
                     {
-                       badGuyRect.X = badGuyRect.X - 1;
+                        badGuyRect.X = badGuyRect.X - 2;
                     }
-                    else if(badGuySpeed.X == -1)
+                    else if (badGuySpeed.X == -1)
                     {
-                        badGuyRect.X = badGuyRect.X + 1;
+                        badGuyRect.X = badGuyRect.X + 2;
                     }
-                    else if(badGuySpeed.Y == 1)
+                    else if (badGuySpeed.Y == 1)
                     {
-                        badGuySpeed.Y = badGuySpeed.Y - 1;
+                        badGuySpeed.Y = badGuySpeed.Y - 2;
                     }
-                    else if(badGuySpeed.Y == -1)
+                    else if (badGuySpeed.Y == -1)
                     {
-                        badGuySpeed.Y = badGuySpeed.Y + 1;
+                        badGuySpeed.Y = badGuySpeed.Y + 2;
                     }
 
 
@@ -335,6 +428,11 @@ namespace Retro_Runner
                 playerRect.X = _graphics.PreferredBackBufferWidth - 30;
             }
 
+            if (playerRect.Intersects(hudRect))
+            {
+                playerRect.Y = 100;
+            }
+
             foreach (Rectangle wall in walls)
                 while (playerRect.Intersects(wall))
                 {
@@ -355,6 +453,37 @@ namespace Retro_Runner
                         playerRect.Y = playerRect.Y - 1;
                     }
                 }
+
+            while (playerRect.Intersects(doorRect))
+            {
+                if (keyboardState.IsKeyDown(Keys.Right) == true || keyboardState.IsKeyDown(Keys.D) == true)
+                {
+                    playerRect.X = playerRect.X - 1;
+                }
+                if (keyboardState.IsKeyDown(Keys.Left) == true || keyboardState.IsKeyDown(Keys.A) == true)
+                {
+                    playerRect.X = playerRect.X + 1;
+                }
+                if (keyboardState.IsKeyDown(Keys.Up) == true || keyboardState.IsKeyDown(Keys.W) == true)
+                {
+                    playerRect.Y = playerRect.Y + 1;
+                }
+                if (keyboardState.IsKeyDown(Keys.Down) == true || keyboardState.IsKeyDown(Keys.S) == true)
+                {
+                    playerRect.Y = playerRect.Y - 1;
+                }
+            }
+
+            for (int i = 0; i < coins.Count; i++)
+            {
+
+                if (playerRect.Intersects(coins[i]))
+                {
+                    coins.RemoveAt(i);
+                    i--;
+                }
+            }
+
 
             seconds = (float)gameTime.TotalGameTime.TotalSeconds - startTime;
             cooldowntime += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -417,8 +546,18 @@ namespace Retro_Runner
                 _spriteBatch.Draw(endGoalTexture, endGoalRect, Color.LimeGreen);
                 foreach (Rectangle wall in walls)
                     _spriteBatch.Draw(wallTexture, wall, Color.White);
+
+                foreach (Rectangle lava in lava)
+                    _spriteBatch.Draw(lavaTexture, lava, Color.DarkOrange);
+
+                foreach (Rectangle coin in coins)
+                    _spriteBatch.Draw(coinTexture, coin, Color.Yellow);
+
                 _spriteBatch.Draw(playerTexture, playerRect, Color.DeepSkyBlue);
                 _spriteBatch.Draw(badGuyTexture, badGuyRect, Color.Red);
+                _spriteBatch.Draw(hudTexture, hudRect, Color.DarkGray);
+                _spriteBatch.Draw(doorTexture, doorRect, Color.SaddleBrown);
+
 
 
             }
@@ -428,6 +567,7 @@ namespace Retro_Runner
                 foreach (Rectangle wall in walls)
                     _spriteBatch.Draw(wallTexture, wall, Color.White);
                 _spriteBatch.Draw(playerTexture, playerRect, Color.DeepSkyBlue);
+                _spriteBatch.Draw(hudTexture, hudRect, Color.DarkGray);
             }
 
             _spriteBatch.End();
