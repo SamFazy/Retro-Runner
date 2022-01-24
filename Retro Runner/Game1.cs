@@ -26,6 +26,10 @@ namespace Retro_Runner
 
         List<Star> stars;
 
+        //Background
+        Texture2D backgroundTexture;
+        Texture2D background2Texture;
+
         //Intro Screen
         Texture2D logoTexture;
         Texture2D continueTexture;
@@ -139,6 +143,10 @@ namespace Retro_Runner
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+
+            //Background
+            backgroundTexture = Content.Load<Texture2D>("BlueGridBackground");
+            background2Texture = Content.Load<Texture2D>("BlueGridBackground2");
             //Player
             playerTexture = Content.Load<Texture2D>("Player");
 
@@ -516,7 +524,7 @@ namespace Retro_Runner
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Black); 
 
             // TODO: Add your drawing code here
 
@@ -524,6 +532,7 @@ namespace Retro_Runner
 
             if (screen == Screen.Intro)
             {
+                _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, 1000, 620), Color.White);
                 foreach (Star stars in stars)
                     _spriteBatch.Draw(stars.Texture, stars.Bounds, Color.White);
 
@@ -533,6 +542,7 @@ namespace Retro_Runner
 
             else if (screen == Screen.MainMenu)
             {
+                _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, 1000, 620), Color.Green);
                 foreach (Star stars in stars)
                     _spriteBatch.Draw(stars.Texture, stars.Bounds, Color.White);
 
@@ -543,6 +553,7 @@ namespace Retro_Runner
 
             else if (screen == Screen.Level1)
             {
+                _spriteBatch.Draw(background2Texture, new Rectangle(0, 0, 1000, 600), Color.Blue);
                 _spriteBatch.Draw(endGoalTexture, endGoalRect, Color.LimeGreen);
                 foreach (Rectangle wall in walls)
                     _spriteBatch.Draw(wallTexture, wall, Color.White);
