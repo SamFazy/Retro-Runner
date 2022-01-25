@@ -60,6 +60,11 @@ namespace Retro_Runner
         Texture2D hudTexture;
         Rectangle hudRect;
 
+        //Timer
+        SpriteFont timeFont;
+        float timerSeconds;
+        float timerStartTime;
+
         //Walls
         Texture2D wallTexture;
         List<Rectangle> walls;
@@ -156,7 +161,10 @@ namespace Retro_Runner
             badGuyTexture = Content.Load<Texture2D>("Player");
 
             //Hud
-            hudTexture = Content.Load<Texture2D>("Player");
+            hudTexture = Content.Load<Texture2D>("HudBackground");
+
+            //Timer
+            timeFont = Content.Load<SpriteFont>("Timer");
 
             //Wall
             wallTexture = Content.Load<Texture2D>("Player");
@@ -196,6 +204,8 @@ namespace Retro_Runner
             previousMouseState = mouseState;
             mouseState = Mouse.GetState();
 
+            timerSeconds = (float)gameTime.TotalGameTime.TotalSeconds - timerStartTime;
+
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -205,6 +215,7 @@ namespace Retro_Runner
             bool pressed = KeypressSpace(Keys.Space);
 
             base.Update(gameTime);
+
 
             //Screens
 
@@ -248,7 +259,7 @@ namespace Retro_Runner
                         stars.bumpTopBottom();
                 }
 
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
                 {
                     if (exitRect.Contains(mouseState.X, mouseState.Y))
                         Exit();
@@ -301,6 +312,10 @@ namespace Retro_Runner
 
                         //End Goal
                         endGoalRect = new Rectangle(960, 230, 60, 200);
+
+                        //Timer
+                        timerStartTime = (float)gameTime.TotalGameTime.TotalSeconds;
+
 
                         screen = Screen.Level1;
                     }
@@ -570,8 +585,9 @@ namespace Retro_Runner
 
                 _spriteBatch.Draw(playerTexture, playerRect, Color.DeepSkyBlue);
                 _spriteBatch.Draw(badGuyTexture, badGuyRect, Color.Red);
-                _spriteBatch.Draw(hudTexture, hudRect, Color.DarkGray);
+                _spriteBatch.Draw(hudTexture, hudRect, Color.White);
                 _spriteBatch.Draw(doorTexture, doorRect, Color.SaddleBrown);
+                _spriteBatch.DrawString(timeFont, timerSeconds.ToString("00.00"), new Vector2(420, 10), Color.White);
 
 
 
@@ -582,7 +598,7 @@ namespace Retro_Runner
                 foreach (Rectangle wall in walls)
                     _spriteBatch.Draw(wallTexture, wall, Color.White);
                 _spriteBatch.Draw(playerTexture, playerRect, Color.DeepSkyBlue);
-                _spriteBatch.Draw(hudTexture, hudRect, Color.DarkGray);
+                _spriteBatch.Draw(hudTexture, hudRect, Color.White);
             }
 
             _spriteBatch.End();
