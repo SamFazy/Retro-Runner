@@ -13,7 +13,6 @@ namespace Retro_Runner
         private SpriteBatch _spriteBatch;
         KeyboardState keyboardState;
         KeyboardState newState;
-        KeyboardState oldState;
 
         MouseState previousMouseState;
         MouseState mouseState;
@@ -100,9 +99,6 @@ namespace Retro_Runner
 
         Player player;
 
-        float seconds;
-        float startTime;
-        float cooldowntime = 0;
 
 
         public Game1()
@@ -227,8 +223,9 @@ namespace Retro_Runner
             continueTexture = Content.Load<Texture2D>("Click to Continue");
             starTexture = Content.Load<Texture2D>("Player");
 
-            musicTheme = Content.Load<SoundEffect>("Retro Runner Theme");
+            musicTheme = Content.Load<SoundEffect>("AllStar");
             musicThemeInstance = musicTheme.CreateInstance();
+            musicThemeInstance.Volume = 0.1f;
 
             //Main Menu
             startTexture = Content.Load<Texture2D>("StartTexture");
@@ -253,7 +250,6 @@ namespace Retro_Runner
 
             // TODO: Add your update logic here
 
-            bool pressed = KeypressSpace(Keys.Space);
 
             base.Update(gameTime);
 
@@ -398,69 +394,23 @@ namespace Retro_Runner
             }
 
             //Bad Guy Movement
-
-
             badGuyRect.X += (int)badGuySpeed.X;
             badGuyRect.Y += (int)badGuySpeed.Y;
-            if (badGuyRect.X < playerRect.X)
-            {
-                badGuySpeed.X = badGuySpeed.X = 1;
-            }
-            if (badGuyRect.X > playerRect.X)
-            {
-                badGuySpeed.X = badGuySpeed.X = -1;
-            }
-            if (badGuyRect.X == playerRect.X)
-            {
-                badGuySpeed.X = badGuySpeed.X = 0;
-            }
-            if (badGuyRect.Y < playerRect.Y)
-            {
-            badGuySpeed.Y = badGuySpeed.Y = 1;
 
-            }
-            if (badGuyRect.Y > playerRect.Y)
+            if (badGuyRect.Y >= _graphics.PreferredBackBufferHeight - 30)
             {
-            badGuySpeed.Y = badGuySpeed.Y = -1;
-            }
-            if (badGuyRect.Y == playerRect.Y)
-            {
-            badGuySpeed.Y = badGuySpeed.Y = 0;
+                badGuySpeed.Y = -5;
             }
 
-            if (badGuyRect.Intersects(hudRect))
+            if (badGuyRect.Y <= 100)
             {
-                badGuyRect.Y = 100;
+                badGuySpeed.Y = 5;
             }
 
-            foreach (Rectangle wall in walls)
-                while (badGuyRect.Intersects(wall))
-                {
-
-                    if (badGuySpeed.X == 1)
-                    {
-                        badGuyRect.X = badGuyRect.X - 2;
-                    }
-                    else if (badGuySpeed.X == -1)
-                    {
-                        badGuyRect.X = badGuyRect.X + 2;
-                    }
-                    else if (badGuySpeed.Y == 1)
-                    {
-                        badGuySpeed.Y = badGuySpeed.Y - 2;
-                    }
-                    else if (badGuySpeed.Y == -1)
-                    {
-                        badGuySpeed.Y = badGuySpeed.Y + 2;
-                    }
-
-
-
-                }
-
+            //Player Movememt
             player.HSpeed = 0;
             player.VSpeed = 0;
-            //Player Movememt
+
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 player.VSpeed = -4;
@@ -479,7 +429,7 @@ namespace Retro_Runner
             }
             player.Update();
 
-            
+            //Collision
 
             while (player.Intersects(hudRect))
             {
@@ -530,10 +480,10 @@ namespace Retro_Runner
             }
 
             foreach (Rectangle lava in lava)
-                while (player.Intersects(lava))
+                while (player.Intersects(lava) || (player.Intersects(badGuyRect)))
                 {
                     player = new Player(playerTexture, _graphics, 150, 150);
-                    badGuyRect = new Rectangle(10, 150, 30, 30);
+                    badGuyRect = new Rectangle(730, 160, 30, 30);
                     hp = hp - 1;
 
 
@@ -559,35 +509,8 @@ namespace Retro_Runner
                 }
             }
 
-
-            seconds = (float)gameTime.TotalGameTime.TotalSeconds - startTime;
-            cooldowntime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (pressed == true && cooldowntime >= 1)
-            {
-                startTime = (float)gameTime.TotalGameTime.TotalSeconds;
-                playerSpeed = 8;
-                cooldowntime = 0;
-            }
-
-            if (seconds >= .20)
-            {
-                startTime = (float)gameTime.TotalGameTime.TotalSeconds;
-                playerSpeed = 4;
-            }
-
-
-            oldState = newState;
         }
 
-        private bool KeypressSpace(Keys theKey)
-        {
-            if (newState.IsKeyUp(theKey) && oldState.IsKeyDown(theKey))
-                return true;
-
-            return false;
-
-        }
 
         protected override void Draw(GameTime gameTime)
         {
@@ -651,6 +574,7 @@ namespace Retro_Runner
                 _spriteBatch.Draw(continueTexture, new Rectangle(115, 300, 750, 450), Color.White);
                 _spriteBatch.Draw(theEndTexture, new Rectangle(250, -50, 500, 500), Color.White);
 
+
             }
 
             else if (screen == Screen.GameOver)
@@ -674,8 +598,8 @@ namespace Retro_Runner
             //Loading in Level 1
 
             //Bad Guy
-            badGuySpeed = new Vector2(0, 0);
-            badGuyRect = new Rectangle(10, 150, 30, 30);
+            badGuySpeed = new Vector2(0, 5);
+            badGuyRect = new Rectangle(730, 160, 30, 30);
             
             //Coins
             coins.Add(new Rectangle(730, 170, 30, 30));
